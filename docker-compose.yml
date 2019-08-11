@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  go:
+    image: golang:1.12
+    environment:
+      GO111MODULE: "on"
+      GOPROXY: https://proxy.golang.org
+    ports:
+      - 8080:8080
+    links:
+      - mysql
+    working_dir: /go/src/app
+    volumes:
+      - .:/go/src/app
+      - gomod-cache:/go/pkg/mod/cache
+    command: go run example/cmd/serve/main.go
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: apix
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+
+volumes:
+  gomod-cache:
+    driver: local
